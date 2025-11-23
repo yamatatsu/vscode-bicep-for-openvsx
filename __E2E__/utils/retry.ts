@@ -6,30 +6,28 @@
  * @returns Result of the function
  */
 export async function retryWhile<T>(
-	func: () => Promise<T>,
-	predicate: (result: T) => boolean,
-	options?: {
-		interval?: number;
-		timeout?: number;
-	},
+  func: () => Promise<T>,
+  predicate: (result: T) => boolean,
+  options?: {
+    interval?: number;
+    timeout?: number;
+  },
 ): Promise<T> {
-	let result = await func();
+  let result = await func();
 
-	const interval = options?.interval ?? 2000;
-	const timeout = options?.timeout ?? 10000;
-	let count = timeout / interval;
+  const interval = options?.interval ?? 2000;
+  const timeout = options?.timeout ?? 10000;
+  let count = timeout / interval;
 
-	while (predicate(result)) {
-		if (count-- <= 0) {
-			throw new Error(
-				`Timeout after ${timeout}ms while retrying operation`,
-			);
-		}
-		await new Promise((resolve) => setTimeout(resolve, interval));
-		result = await func();
-	}
+  while (predicate(result)) {
+    if (count-- <= 0) {
+      throw new Error(`Timeout after ${timeout}ms while retrying operation`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, interval));
+    result = await func();
+  }
 
-	return result;
+  return result;
 }
 
 /**
@@ -38,15 +36,15 @@ export async function retryWhile<T>(
  * @param options Retry options
  */
 export async function until(
-	predicate: () => boolean,
-	options?: {
-		interval?: number;
-		timeout?: number;
-	},
+  predicate: () => boolean,
+  options?: {
+    interval?: number;
+    timeout?: number;
+  },
 ): Promise<void> {
-	await retryWhile(
-		async () => void 0,
-		() => !predicate(),
-		options,
-	);
+  await retryWhile(
+    async () => void 0,
+    () => !predicate(),
+    options,
+  );
 }

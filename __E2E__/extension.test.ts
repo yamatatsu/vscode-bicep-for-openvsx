@@ -45,10 +45,7 @@ suite('Extension Test Suite', () => {
         hovers && hovers.length > 0,
         'Language server should provide hover information',
       );
-      assert.ok(
-        hovers[0].contents.length > 0,
-        'Hover should have content',
-      );
+      assert.ok(hovers[0].contents.length > 0, 'Hover should have content');
     });
 
     test('Language server should provide completions', async function () {
