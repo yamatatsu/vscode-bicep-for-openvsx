@@ -1,0 +1,7 @@
+[install]
+minimumReleaseAge = 604800 # 7日
+
+security.scanner = "@bun-security-scanner/osv"
+
+[test]
+root = "./src/test/unit"
