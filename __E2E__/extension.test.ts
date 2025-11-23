@@ -8,8 +8,9 @@ suite('Extension Test Suite', () => {
 
   suite('0. Language Server Health Check (Critical)', () => {
     test('Language server should be ready and respond to requests', async function () {
-      // Max observed: 1357ms, recommended: 5000ms (3.5x buffer for CI/slow machines)
-      this.timeout(5000);
+      // Max observed: 1357ms local, CI needs more time for .NET Runtime + Language Server initialization
+      // Recommended: 15000ms (generous buffer for CI environment)
+      this.timeout(15000);
 
       // 1. Get extension and explicitly activate it
       const extension = vscode.extensions.getExtension(
@@ -37,7 +38,7 @@ suite('Extension Test Suite', () => {
             new vscode.Position(0, 6), // 'location' parameter name
           ),
         (result) => !result || result.length === 0,
-        { timeout: 4000, interval: 1000 },
+        { timeout: 12000, interval: 1000 },
       );
 
       // 4. Verify language server is responding
@@ -79,8 +80,8 @@ suite('Extension Test Suite', () => {
     });
 
     test('Language server should provide diagnostics for invalid code', async function () {
-      // Fast test, but allow time for diagnostic generation: 3000ms
-      this.timeout(3000);
+      // Allow extra time for diagnostic generation in CI: 6000ms
+      this.timeout(6000);
 
       // Create a document with an error
       const document = await vscode.workspace.openTextDocument({
@@ -96,7 +97,7 @@ suite('Extension Test Suite', () => {
           return diagnostics;
         },
         (diagnostics) => diagnostics.length === 0,
-        { timeout: 2500, interval: 500 },
+        { timeout: 5000, interval: 500 },
       );
 
       const diagnostics = vscode.languages.getDiagnostics(document.uri);
@@ -120,7 +121,8 @@ suite('Extension Test Suite', () => {
     });
 
     test('Extension should activate when needed', async function () {
-      this.timeout(10000);
+      // Increased for CI environment with .NET Runtime initialization
+      this.timeout(15000);
 
       const extension = vscode.extensions.getExtension(
         'Yamatatsu.vscode-bicep-for-openvsx',
@@ -141,8 +143,8 @@ suite('Extension Test Suite', () => {
 
   suite('2. Language Server Startup', () => {
     test('Language client should start when opening a Bicep file', async function () {
-      // Max observed: 148ms, recommended: 5000ms (includes language server initialization)
-      this.timeout(5000);
+      // Max observed: 148ms local, increased for CI language server initialization
+      this.timeout(10000);
 
       const fixturesPath = path.join(__dirname, '../fixtures');
       const validBicepPath = path.join(fixturesPath, 'valid.bicep');
@@ -167,7 +169,7 @@ suite('Extension Test Suite', () => {
             new vscode.Position(0, 0),
           ),
         (result) => !result || result.length === 0,
-        { timeout: 4000, interval: 1000 },
+        { timeout: 8000, interval: 1000 },
       );
 
       assert.ok(
@@ -208,8 +210,8 @@ suite('Extension Test Suite', () => {
     });
 
     test('Diagnostics should be available for invalid Bicep files', async function () {
-      // Max observed: 2020ms, recommended: 5000ms (2.5x buffer for file analysis)
-      this.timeout(5000);
+      // Max observed: 2020ms local, increased for CI file analysis
+      this.timeout(8000);
 
       const fixturesPath = path.join(__dirname, '../fixtures');
       const invalidBicepPath = path.join(fixturesPath, 'invalid.bicep');
@@ -222,7 +224,7 @@ suite('Extension Test Suite', () => {
       const diagnostics = await retryWhile(
         async () => vscode.languages.getDiagnostics(uri),
         (diagnostics) => diagnostics.length === 0,
-        { timeout: 4000, interval: 500 },
+        { timeout: 6000, interval: 500 },
       );
 
       // The invalid file should have at least some diagnostics

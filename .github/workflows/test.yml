@@ -21,6 +21,9 @@ jobs:
       - name: Run check
         run: bun run check
 
+      - name: Download Bicep Language Server
+        run: bun run download-server
+
       - name: Run build
         run: bun run build
 
