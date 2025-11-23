@@ -109,6 +109,55 @@ This will pull the latest changes from the Azure/bicep main branch.
 git subtree pull --prefix=vendor/bicep https://github.com/Azure/bicep main --squash
 ```
 
+## Roadmap
+
+This project aims to provide essential language support for Bicep in Open VSX compatible environments.
+
+### Current Status
+
+✅ **Implemented:**
+- Bicep syntax highlighting
+- Language Server integration (diagnostics, IntelliSense, hover, formatting)
+- Configurable language server path
+
+### Planned Features
+
+#### Phase 1: Basic Language Features
+- `.bicepparam` file support
+- `bicepconfig.json` JSON schema validation
+- Editor default settings (tab size, etc.)
+- Custom file icons
+
+#### Phase 2: Developer Experience Enhancements
+- Bicep syntax highlighting in Markdown code blocks
+- Snippets for common patterns
+
+### Not Planned
+
+#### Build and Compile Commands
+Build and decompile commands will **not** be implemented in this extension. Users should use the Bicep CLI directly for these operations:
+- `bicep build` - Build ARM Template
+- `bicep decompile` - Decompile JSON to Bicep
+- `bicep generate-params` - Generate parameters file
+
+**Rationale:** The Bicep CLI already provides excellent command-line tools for these operations. This extension focuses on editor integration rather than duplicating CLI functionality.
+
+#### Advanced Features (Not Currently Planned)
+- Bicep Visualizer
+- Azure deployment features
+- Resource insertion
+- Module restore functionality
+
+**Note:** Azure integration features are out of scope for this project.
+
+### Philosophy
+
+This extension follows a **lightweight, focused approach**:
+- Provide excellent language support and editor integration
+- Defer to the Bicep CLI for build/compile operations
+- Avoid duplicating functionality available in other tools
+- Keep the extension small and fast
+
 ## License
 
 This extension is MIT licensed. It includes components from the Bicep project (MIT, Microsoft Corporation); see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).
