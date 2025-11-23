@@ -9,7 +9,7 @@
   "activationEvents": ["onLanguage:bicep"],
   "main": "./dist/extension.js",
   "author": "Tatsuya Yamamoto <the.kinnikuman@gmail.com> (https://github.com/yamatatsu)",
-  "publisher": "Yamatatsu",
+  "publisher": "yamatatsu",
   "bugs": {
     "url": "https://github.com/yamatatsu/vscode-bicep-for-openvsx"
   },
