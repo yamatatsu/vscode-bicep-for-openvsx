@@ -28,13 +28,13 @@ export async function activate(context: vscode.ExtensionContext) {
     languageServerPath = bundledDllPath;
   }
 
-  // Acquire .NET Runtime 10.0 from ms-dotnettools.vscode-dotnet-runtime extension
+  // Acquire .NET Runtime 8.0 from ms-dotnettools.vscode-dotnet-runtime extension
   let dotnetPath: string;
   try {
     const dotnetResult = await vscode.commands.executeCommand<{
       dotnetPath: string;
     }>('dotnet.acquire', {
-      version: '10.0',
+      version: '8.0',
       requestingExtensionId: 'Yamatatsu.vscode-bicep-for-openvsx',
     });
 

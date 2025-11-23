@@ -17,26 +17,33 @@ This extension provides language support for Bicep files (`.bicep`), including:
 
 ## Setup
 
-This extension includes the Bicep Language Server, so it should work out of the box for most users (Windows, macOS, Linux).
+This extension includes the Bicep Language Server and should work out of the box for most users (Windows, macOS, Linux).
+
+### Requirements
+
+- **.NET Runtime 8.0**: Automatically installed via the [.NET Install Tool](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscode-dotnet-runtime) extension
+  - This extension declares `ms-dotnettools.vscode-dotnet-runtime` as a dependency
+  - The .NET runtime will be acquired automatically when the extension activates
 
 ### How It Works
 
-This extension uses the **Bicep CLI** in Language Server mode (`bicep jsonrpc --stdio`):
-- No .NET Runtime required
-- Standalone binaries for all platforms
+This extension uses the **Bicep Language Server** (`Bicep.LangServer.dll`):
+- Bundled with the extension (~100MB)
+- Requires .NET Runtime 8.0
 - Currently using Bicep v0.39.26
+- Runs via the .NET Install Tool extension
 
 ### Manual Configuration (Optional)
 
-If you wish to use a specific version of the Bicep CLI, you can configure the path manually:
+If you wish to use a custom Bicep Language Server DLL, you can configure the path manually:
 
-1. **Install Bicep CLI**: Download from [Bicep Releases](https://github.com/Azure/bicep/releases)
+1. **Download Bicep Language Server**: Get `Bicep.LangServer.dll` from [Bicep Releases](https://github.com/Azure/bicep/releases)
 2. **Configure Extension**:
-   Open your VS Code settings (`settings.json`) and add the following configuration:
+   Open your VS Code settings (`settings.json`) and add:
 
    ```json
    {
-     "bicep.languageServerPath": "/path/to/your/bicep-cli-binary"
+     "bicep.languageServerPath": "/path/to/Bicep.LangServer.dll"
    }
    ```
 
