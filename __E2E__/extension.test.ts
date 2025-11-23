@@ -1,9 +1,118 @@
 import * as assert from 'node:assert';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import { retryWhile } from './utils/retry';
 
 suite('Extension Test Suite', () => {
   vscode.window.showInformationMessage('Start all tests.');
+
+  suite('0. Language Server Health Check (Critical)', () => {
+    test('Language server should be ready and respond to requests', async function () {
+      // Max observed: 1357ms, recommended: 5000ms (3.5x buffer for CI/slow machines)
+      this.timeout(5000);
+
+      // 1. Get extension and explicitly activate it
+      const extension = vscode.extensions.getExtension(
+        'Yamatatsu.vscode-bicep-for-openvsx',
+      );
+      assert.ok(extension, 'Extension should be installed');
+
+      if (!extension.isActive) {
+        await extension.activate();
+      }
+
+      // 2. Open a simple Bicep document
+      const document = await vscode.workspace.openTextDocument({
+        language: 'bicep',
+        content: 'param location string = resourceGroup().location\n',
+      });
+      await vscode.window.showTextDocument(document);
+
+      // 3. Wait for language server to start and respond to hover requests
+      const hovers = await retryWhile(
+        async () =>
+          await vscode.commands.executeCommand<vscode.Hover[]>(
+            'vscode.executeHoverProvider',
+            document.uri,
+            new vscode.Position(0, 6), // 'location' parameter name
+          ),
+        (result) => !result || result.length === 0,
+        { timeout: 4000, interval: 1000 },
+      );
+
+      // 4. Verify language server is responding
+      assert.ok(
+        hovers && hovers.length > 0,
+        'Language server should provide hover information',
+      );
+      assert.ok(
+        hovers[0].contents.length > 0,
+        'Hover should have content',
+      );
+    });
+
+    test('Language server should provide completions', async function () {
+      // Max observed: 189ms, recommended: 1000ms (5x buffer for quick tests)
+      this.timeout(1000);
+
+      // Create a document with completion trigger
+      const document = await vscode.workspace.openTextDocument({
+        language: 'bicep',
+        content: 'param name string = resource',
+      });
+      await vscode.window.showTextDocument(document);
+
+      // Wait for completion provider to be ready
+      const completions = await retryWhile(
+        async () =>
+          await vscode.commands.executeCommand<vscode.CompletionList>(
+            'vscode.executeCompletionItemProvider',
+            document.uri,
+            new vscode.Position(0, 28), // After 'resource'
+          ),
+        (result) => !result || result.items.length === 0,
+        { timeout: 800, interval: 200 },
+      );
+
+      // Verify completions are provided
+      assert.ok(
+        completions && completions.items.length > 0,
+        'Language server should provide completions',
+      );
+    });
+
+    test('Language server should provide diagnostics for invalid code', async function () {
+      // Fast test, but allow time for diagnostic generation: 3000ms
+      this.timeout(3000);
+
+      // Create a document with an error
+      const document = await vscode.workspace.openTextDocument({
+        language: 'bicep',
+        content: 'invalid syntax here\n',
+      });
+      await vscode.window.showTextDocument(document);
+
+      // Wait for diagnostics to be generated
+      await retryWhile(
+        async () => {
+          const diagnostics = vscode.languages.getDiagnostics(document.uri);
+          return diagnostics;
+        },
+        (diagnostics) => diagnostics.length === 0,
+        { timeout: 2500, interval: 500 },
+      );
+
+      const diagnostics = vscode.languages.getDiagnostics(document.uri);
+      assert.ok(
+        diagnostics.length > 0,
+        'Language server should report errors for invalid code',
+      );
+      assert.ok(
+        diagnostics.some((d) => d.severity === vscode.DiagnosticSeverity.Error),
+        'Should have at least one error diagnostic',
+      );
+    });
+  });
 
   suite('1. Extension Activation', () => {
     test('Extension should be present', () => {
@@ -14,22 +123,29 @@ suite('Extension Test Suite', () => {
     });
 
     test('Extension should activate when needed', async function () {
-      this.timeout(5000);
+      this.timeout(10000);
 
       const extension = vscode.extensions.getExtension(
         'Yamatatsu.vscode-bicep-for-openvsx',
       );
-      assert.ok(extension);
+      assert.ok(extension, 'Extension should be installed');
 
-      // Extension will activate automatically when a .bicep file is opened
-      // Just verify it's available
-      assert.ok(extension !== undefined, 'Extension should be available');
+      // Explicitly activate the extension
+      if (!extension.isActive) {
+        await extension.activate();
+      }
+
+      assert.ok(
+        extension.isActive,
+        'Extension should be active after activation',
+      );
     });
   });
 
   suite('2. Language Server Startup', () => {
     test('Language client should start when opening a Bicep file', async function () {
-      this.timeout(10000);
+      // Max observed: 148ms, recommended: 5000ms (includes language server initialization)
+      this.timeout(5000);
 
       const fixturesPath = path.join(__dirname, '../fixtures');
       const validBicepPath = path.join(fixturesPath, 'valid.bicep');
@@ -38,14 +154,28 @@ suite('Extension Test Suite', () => {
       const document = await vscode.workspace.openTextDocument(uri);
       await vscode.window.showTextDocument(document);
 
-      // Wait for language server to initialize
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
       assert.ok(document, 'Document should be opened');
       assert.strictEqual(
         document.languageId,
         'bicep',
         'Language ID should be bicep',
+      );
+
+      // Wait for language server to initialize by checking if it responds
+      const hovers = await retryWhile(
+        async () =>
+          await vscode.commands.executeCommand<vscode.Hover[]>(
+            'vscode.executeHoverProvider',
+            document.uri,
+            new vscode.Position(0, 0),
+          ),
+        (result) => !result || result.length === 0,
+        { timeout: 4000, interval: 1000 },
+      );
+
+      assert.ok(
+        hovers !== undefined,
+        'Language server should be initialized and responding',
       );
     });
   });
@@ -81,7 +211,8 @@ suite('Extension Test Suite', () => {
     });
 
     test('Diagnostics should be available for invalid Bicep files', async function () {
-      this.timeout(15000);
+      // Max observed: 2020ms, recommended: 5000ms (2.5x buffer for file analysis)
+      this.timeout(5000);
 
       const fixturesPath = path.join(__dirname, '../fixtures');
       const invalidBicepPath = path.join(fixturesPath, 'invalid.bicep');
@@ -90,15 +221,22 @@ suite('Extension Test Suite', () => {
       const document = await vscode.workspace.openTextDocument(uri);
       await vscode.window.showTextDocument(document);
 
-      // Wait for language server to analyze the file
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      const diagnostics = vscode.languages.getDiagnostics(uri);
+      // Wait for language server to analyze the file and provide diagnostics
+      const diagnostics = await retryWhile(
+        async () => vscode.languages.getDiagnostics(uri),
+        (diagnostics) => diagnostics.length === 0,
+        { timeout: 4000, interval: 500 },
+      );
 
       // The invalid file should have at least some diagnostics
-      // Note: This might not work if language server is not fully initialized
-      // In that case, we just verify that getDiagnostics doesn't throw
-      assert.ok(Array.isArray(diagnostics), 'Diagnostics should be an array');
+      assert.ok(
+        diagnostics.length > 0,
+        'Invalid Bicep file should have diagnostics',
+      );
+      assert.ok(
+        diagnostics.some((d) => d.severity === vscode.DiagnosticSeverity.Error),
+        'Should have at least one error diagnostic',
+      );
     });
   });
 
