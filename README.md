@@ -93,6 +93,22 @@ The E2E tests will:
 - Download VS Code test instance (if not cached)
 - Run tests in a real VS Code environment
 
+### Azure/bicep Reference Repository
+
+This project includes the [Azure/bicep](https://github.com/Azure/bicep) repository as a reference using **git subtree** in the `vendor/bicep` directory. This allows us to reference the original source code for syntax definitions, language server implementation, and other features.
+
+**Update the reference:**
+```bash
+bun run update-bicep-reference
+```
+
+This will pull the latest changes from the Azure/bicep main branch.
+
+**Manual update (alternative):**
+```bash
+git subtree pull --prefix=vendor/bicep https://github.com/Azure/bicep main --squash
+```
+
 ## License
 
 This extension is MIT licensed. It includes components from the Bicep project (MIT, Microsoft Corporation); see [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES).

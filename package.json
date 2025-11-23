@@ -34,6 +34,7 @@
   "scripts": {
     "vscode:prepublish": "bun run download-server && bun run build",
     "download-server": "bun run ./scripts/download-server.ts",
+    "update-bicep-reference": "bun run ./scripts/update-bicep-reference.ts",
     "build": "bun build ./src/extension.ts --outdir=./dist --external vscode --target=node --format=cjs",
     "watch": "bun build ./src/extension.ts --outdir=./dist --external vscode --target=node --format=cjs --watch",
     "check": "bun run check:lint && bun run check:type",
