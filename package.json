@@ -43,7 +43,7 @@
     "check:type": "tsc -p . --noEmit",
     "package": "vsce package",
     "test": "bun test",
-    "compile-tests": "tsc -p . && tsc -p __E2E__",
+    "compile-tests": "tsc -p __E2E__",
     "test:e2e": "bun run compile-tests && vscode-test"
   },
   "dependencies": {
