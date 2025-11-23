@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Utils\**" />
+    <EmbeddedResource Remove="Utils\**" />
+    <None Remove="Utils\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="MSTest" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageClient" />
+    <PackageReference Include="RichardSzalay.MockHttp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bicep.Core.Samples\Bicep.Core.Samples.csproj" />
+    <ProjectReference Include="..\Bicep.LangServer\Bicep.LangServer.csproj" />
+	<ProjectReference Include="..\Bicep.LangServer.IntegrationTests\Bicep.LangServer.IntegrationTests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "enum": [
+        "https://aka.ms/bicep-registry-module-version-file-schema#"
+      ],
+      "description": "Bicep registry module version file JSON schema reference."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-(?:[\\da-z\\-]+)(?:\\.(?:[\\da-z\\-]+))*)?$",
+      "description": "The major.minor-pre version to use as the basis for version calculations."
+    }
+  },
+  "required": [
+    "$schema",
+    "version"
+  ],
+  "additionalProperties": false
+}

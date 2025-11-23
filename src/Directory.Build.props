@@ -1,0 +1,56 @@
+<Project>
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <LangVersion>default</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- NU5104: A stable release of a package should not have a prerelease dependency -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Bubble up all unused usings https://github.com/dotnet/roslyn/issues/41640#issuecomment-985780130 -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <!-- disable nuget packing on all projects by default -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Testing">
+    <EnableMSTestRunner>true</EnableMSTestRunner>
+
+    <!-- More info about dotnet test integration https://learn.microsoft.com/dotnet/core/testing/unit-testing-platform-integration-dotnet-test -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+
+    <!-- The way CI is setup is to run dotnet test multiple times with a filter. -->
+    <!-- Most projects will have zero tests from that filter, so we ignore the "zero tests ran" exit code -->
+    <!-- It seems that most filter usages is using FullyQualifiedName with the intent to run a specific assembly -->
+    <!-- The CI should be refactored to run dotnet test for the specific assembly directly rather than using a filter -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <!-- set default framework - each project can still override -->
+  <PropertyGroup Condition=" '$(MSBuildProjectExtension)' == '.csproj' ">
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- settings of the GenerateNotice tool -->
+    <GenerateNoticeRetryCount>9</GenerateNoticeRetryCount>
+    <GenerateNoticeBatchSize>100</GenerateNoticeBatchSize>
+
+    <!--
+      use local file for local and GH builds
+      the ADO builds will set this to false via the environment variables to generate TPN files using the API
+     -->
+    <GenerateNoticeUseLocalFile Condition="'$(GenerateNoticeUseLocalFile)'==''">true</GenerateNoticeUseLocalFile>
+
+    <!--
+      do not update the checked-in tpn file by default
+      we will run a scheduled GH build that will set this to true via environment variables to create PRs with TPN file updates
+    -->
+    <GenerateNoticeUpdateLocalFile Condition="'$(GenerateNoticeUpdateLocalFile)'==''">false</GenerateNoticeUpdateLocalFile>
+  </PropertyGroup>
+</Project>

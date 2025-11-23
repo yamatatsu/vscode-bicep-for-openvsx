@@ -1,0 +1,26 @@
+{
+  "cloud": {
+    "currentProfile": "AzureUSGovernment",
+    "credentialPrecedence": [
+      "Environment",
+      "AzureCLI"
+    ]
+  },
+  "moduleAliases": {
+    "ts": {
+      "test-specs": {
+        "subscription": "d1d65353-7d87-447b-8daa-89e868034b2a",
+        "resourceGroup": "bicep-ci"
+      }
+    },
+    "br": {
+      "test-registry": {
+        "registry": "biceptestff2.azurecr.us"
+      },
+      "test-modules": {
+        "registry": "biceptestff2.azurecr.us",
+        "modulePath": "restore"
+      }
+    }
+  }
+}
