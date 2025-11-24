@@ -16,17 +16,7 @@ This extension provides language support for Bicep files (`.bicep`) and Bicep pa
   - Formatting
 - **Configuration Support**: JSON schema validation for `bicepconfig.json` files
 
-## Setup
-
-This extension includes the Bicep Language Server and should work out of the box for most users (Windows, macOS, Linux).
-
-### Requirements
-
-- **.NET Runtime 8.0**: 
-  - This extension declares `ms-dotnettools.vscode-dotnet-runtime` as a dependency
-  - The .NET runtime will be acquired automatically when the extension activates
-
-### How It Works
+## How It Works
 
 This extension uses the **Bicep Language Server** (`Bicep.LangServer.dll`):
 - Bundled with the extension (~100MB)
@@ -34,20 +24,6 @@ This extension uses the **Bicep Language Server** (`Bicep.LangServer.dll`):
   - Automatically installed via the Microsoft official extension [.NET Install Tool](https://open-vsx.org/extension/ms-dotnettools/vscode-dotnet-runtime)
 - Currently using Bicep v0.39.26
 - Runs via the .NET Install Tool extension
-
-### Manual Configuration (Optional)
-
-If you wish to use a custom Bicep Language Server DLL, you can configure the path manually:
-
-1. **Download Bicep Language Server**: Get `Bicep.LangServer.dll` from [Bicep Releases](https://github.com/Azure/bicep/releases)
-2. **Configure Extension**:
-   Open your VS Code settings (`settings.json`) and add:
-
-   ```json
-   {
-     "bicep.languageServerPath": "/path/to/Bicep.LangServer.dll"
-   }
-   ```
 
 ## Roadmap
 
@@ -64,10 +40,7 @@ This project aims to provide essential language support for Bicep in Open VSX co
 
 ### Planned Features
 
-#### Phase 1: Basic Language Features
 - Editor default settings (tab size, etc.)
-
-#### Phase 2: Developer Experience Enhancements
 - Bicep syntax highlighting in Markdown code blocks
 - Snippets for common patterns
 
