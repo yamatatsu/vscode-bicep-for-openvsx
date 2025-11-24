@@ -14,6 +14,7 @@ This extension provides language support for Bicep files (`.bicep`) and Bicep pa
   - IntelliSense (Code completion)
   - Hover information
   - Formatting
+- **Configuration Support**: JSON schema validation for `bicepconfig.json` files
 
 ## Setup
 
@@ -126,12 +127,12 @@ This project aims to provide essential language support for Bicep in Open VSX co
 - Bicep syntax highlighting (`.bicep` and `.bicepparam` files)
 - Language Server integration (diagnostics, IntelliSense, hover, formatting)
 - `.bicepparam` file support
+- `bicepconfig.json` JSON schema validation
 - Configurable language server path
 
 ### Planned Features
 
 #### Phase 1: Basic Language Features
-- `bicepconfig.json` JSON schema validation
 - Editor default settings (tab size, etc.)
 - Custom file icons
 

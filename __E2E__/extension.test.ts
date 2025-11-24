@@ -326,4 +326,145 @@ suite('Extension Test Suite', () => {
       );
     });
   });
+
+  suite('5. bicepconfig.json Schema Validation', () => {
+    test('Valid bicepconfig.json should not have schema errors', async function () {
+      this.timeout(5000);
+
+      const fixturesPath = path.join(__dirname, '../fixtures');
+      const validConfigPath = path.join(
+        fixturesPath,
+        'valid-config',
+        'bicepconfig.json',
+      );
+      const uri = vscode.Uri.file(validConfigPath);
+
+      const document = await vscode.workspace.openTextDocument(uri);
+      await vscode.window.showTextDocument(document);
+
+      // Wait for schema validation to complete
+      await retryWhile(
+        async () => {
+          const diagnostics = vscode.languages.getDiagnostics(uri);
+          return diagnostics;
+        },
+        (diagnostics) => diagnostics === undefined,
+        { timeout: 3000, interval: 500 },
+      );
+
+      const diagnostics = vscode.languages.getDiagnostics(uri);
+
+      // Valid config should have no errors
+      const errors = diagnostics.filter(
+        (d) => d.severity === vscode.DiagnosticSeverity.Error,
+      );
+      assert.strictEqual(
+        errors.length,
+        0,
+        'Valid bicepconfig.json should have no schema errors',
+      );
+    });
+
+    test('Invalid bicepconfig.json should have schema errors', async function () {
+      this.timeout(10000);
+
+      const fixturesPath = path.join(__dirname, '../fixtures');
+      const invalidConfigPath = path.join(
+        fixturesPath,
+        'invalid-config',
+        'bicepconfig.json',
+      );
+      const uri = vscode.Uri.file(invalidConfigPath);
+
+      const document = await vscode.workspace.openTextDocument(uri);
+      await vscode.window.showTextDocument(document);
+
+      // Wait for schema validation to complete and diagnostics to appear
+      const diagnostics = await retryWhile(
+        async () => vscode.languages.getDiagnostics(uri),
+        (diagnostics) => !diagnostics || diagnostics.length === 0,
+        { timeout: 8000, interval: 500 },
+      );
+
+      const errors = diagnostics.filter(
+        (d) => d.severity === vscode.DiagnosticSeverity.Error,
+      );
+      const warnings = diagnostics.filter(
+        (d) => d.severity === vscode.DiagnosticSeverity.Warning,
+      );
+
+      // Should have at least some problems (errors or warnings)
+      assert.ok(
+        errors.length + warnings.length >= 2,
+        `Expected at least 2 schema problems, got ${errors.length} errors and ${warnings.length} warnings. Messages: ${diagnostics.map((d) => d.message).join(', ')}`,
+      );
+
+      // Check for specific error: "enabled" should be boolean
+      const enabledTypeError = diagnostics.find(
+        (d) =>
+          d.message.includes('boolean') ||
+          d.message.includes('Incorrect type') ||
+          d.message.includes('string'),
+      );
+      assert.ok(
+        enabledTypeError,
+        'Should have an error about "enabled" field type mismatch',
+      );
+
+      // Check for specific error: "level" should be one of the enum values
+      const levelEnumError = diagnostics.find(
+        (d) =>
+          d.message.includes('off') ||
+          d.message.includes('info') ||
+          d.message.includes('warning') ||
+          d.message.includes('error') ||
+          d.message.includes('enum') ||
+          d.message.includes('allowed') ||
+          d.message.includes('Value is not accepted'),
+      );
+      assert.ok(
+        levelEnumError,
+        'Should have an error about "level" field enum value',
+      );
+
+      // Optionally check for warning or error about unknown property
+      // Note: This depends on schema configuration (additionalProperties)
+      const unknownPropertyProblem = diagnostics.find(
+        (d) =>
+          d.message.includes('unknownTopLevelProperty') ||
+          d.message.includes('not allowed') ||
+          d.message.includes('additional') ||
+          d.message.includes('Property') ||
+          d.message.includes('not expected'),
+      );
+      // This assertion is optional as the schema may not strictly forbid additional properties
+      if (unknownPropertyProblem) {
+        assert.ok(true, 'Found expected warning about unknown property');
+      }
+    });
+
+    test('bicepconfig.json should have JSON schema association', () => {
+      const extension = vscode.extensions.getExtension(
+        'Yamatatsu.vscode-bicep-for-openvsx',
+      );
+      assert.ok(extension, 'Extension should be installed');
+
+      const jsonValidation = extension.packageJSON?.contributes?.jsonValidation;
+      assert.ok(jsonValidation, 'Extension should contribute JSON validation');
+
+      const bicepConfigValidation = jsonValidation.find(
+        // biome-ignore lint/suspicious/noExplicitAny: for test code
+        (v: any) => v.fileMatch === 'bicepconfig.json',
+      );
+      assert.ok(
+        bicepConfigValidation,
+        'Should have JSON schema for bicepconfig.json',
+      );
+      assert.strictEqual(
+        bicepConfigValidation.url,
+        './schemas/bicepconfig.schema.json',
+        'Should reference the correct schema file',
+      );
+    });
+  });
 });

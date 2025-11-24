@@ -1,0 +1,14 @@
+{
+  "analyzers": {
+    "core": {
+      "enabled": "should-be-boolean",
+      "verbose": false,
+      "rules": {
+        "no-unused-params": {
+          "level": "invalid-level-value"
+        }
+      }
+    }
+  },
+  "unknownTopLevelProperty": true
+}
