@@ -71,9 +71,15 @@ export async function activate(context: vscode.ExtensionContext) {
   };
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'bicep' }],
+    documentSelector: [
+      { scheme: 'file', language: 'bicep' },
+      { scheme: 'file', language: 'bicep-params' },
+    ],
     synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.bicep'),
+      fileEvents: [
+        vscode.workspace.createFileSystemWatcher('**/*.bicep'),
+        vscode.workspace.createFileSystemWatcher('**/*.bicepparam'),
+      ],
     },
   };
 

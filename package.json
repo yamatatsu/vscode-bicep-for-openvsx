@@ -14,7 +14,8 @@
     "Open VSX"
   ],
   "activationEvents": [
-    "onLanguage:bicep"
+    "onLanguage:bicep",
+    "onLanguage:bicep-params"
   ],
   "main": "./dist/extension.js",
   "author": "Tatsuya Yamamoto <the.kinnikuman@gmail.com> (https://github.com/yamatatsu)",
@@ -95,11 +96,27 @@
           ".bicep"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "bicep-params",
+        "aliases": [
+          "Bicep Parameters",
+          "Bicep Params"
+        ],
+        "extensions": [
+          ".bicepparam"
+        ],
+        "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "bicep",
+        "scopeName": "source.bicep",
+        "path": "./syntaxes/bicep.tmlanguage"
+      },
+      {
+        "language": "bicep-params",
         "scopeName": "source.bicep",
         "path": "./syntaxes/bicep.tmlanguage"
       }

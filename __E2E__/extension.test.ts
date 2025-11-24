@@ -198,6 +198,24 @@ suite('Extension Test Suite', () => {
       );
     });
 
+    test('.bicepparam files should be recognized', async () => {
+      const fixturesPath = path.join(__dirname, '../fixtures');
+      const validBicepParamPath = path.join(fixturesPath, 'valid.bicepparam');
+      const uri = vscode.Uri.file(validBicepParamPath);
+
+      const document = await vscode.workspace.openTextDocument(uri);
+
+      assert.strictEqual(
+        document.languageId,
+        'bicep-params',
+        'Language ID should be bicep-params',
+      );
+      assert.ok(
+        document.fileName.endsWith('.bicepparam'),
+        'File should have .bicepparam extension',
+      );
+    });
+
     test('Syntax highlighting should be available', () => {
       const bicepGrammar = vscode.extensions.all.find((ext) =>
         ext.packageJSON?.contributes?.grammars?.some(
@@ -207,6 +225,20 @@ suite('Extension Test Suite', () => {
       );
 
       assert.ok(bicepGrammar, 'Bicep grammar should be registered');
+    });
+
+    test('Syntax highlighting should be available for .bicepparam files', () => {
+      const bicepParamsGrammar = vscode.extensions.all.find((ext) =>
+        ext.packageJSON?.contributes?.grammars?.some(
+          // biome-ignore lint/suspicious/noExplicitAny: for test code
+          (g: any) => g.language === 'bicep-params',
+        ),
+      );
+
+      assert.ok(
+        bicepParamsGrammar,
+        'Bicep params grammar should be registered',
+      );
     });
 
     test('Diagnostics should be available for invalid Bicep files', async function () {
@@ -231,6 +263,38 @@ suite('Extension Test Suite', () => {
       assert.ok(
         diagnostics.length > 0,
         'Invalid Bicep file should have diagnostics',
+      );
+      assert.ok(
+        diagnostics.some((d) => d.severity === vscode.DiagnosticSeverity.Error),
+        'Should have at least one error diagnostic',
+      );
+    });
+
+    test('Diagnostics should be available for invalid .bicepparam files', async function () {
+      // Max observed: 2020ms local, increased for CI file analysis
+      this.timeout(8000);
+
+      const fixturesPath = path.join(__dirname, '../fixtures');
+      const invalidBicepParamPath = path.join(
+        fixturesPath,
+        'invalid.bicepparam',
+      );
+      const uri = vscode.Uri.file(invalidBicepParamPath);
+
+      const document = await vscode.workspace.openTextDocument(uri);
+      await vscode.window.showTextDocument(document);
+
+      // Wait for language server to analyze the file and provide diagnostics
+      const diagnostics = await retryWhile(
+        async () => vscode.languages.getDiagnostics(uri),
+        (diagnostics) => diagnostics.length === 0,
+        { timeout: 6000, interval: 500 },
+      );
+
+      // The invalid file should have at least some diagnostics
+      assert.ok(
+        diagnostics.length > 0,
+        'Invalid .bicepparam file should have diagnostics',
       );
       assert.ok(
         diagnostics.some((d) => d.severity === vscode.DiagnosticSeverity.Error),
