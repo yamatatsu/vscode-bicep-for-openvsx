@@ -134,7 +134,6 @@ This project aims to provide essential language support for Bicep in Open VSX co
 
 #### Phase 1: Basic Language Features
 - Editor default settings (tab size, etc.)
-- Custom file icons
 
 #### Phase 2: Developer Experience Enhancements
 - Bicep syntax highlighting in Markdown code blocks
