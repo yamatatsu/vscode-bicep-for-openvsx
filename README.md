@@ -22,7 +22,7 @@ This extension includes the Bicep Language Server and should work out of the box
 
 ### Requirements
 
-- **.NET Runtime 8.0**: Automatically installed via the [.NET Install Tool](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscode-dotnet-runtime) extension
+- **.NET Runtime 8.0**: 
   - This extension declares `ms-dotnettools.vscode-dotnet-runtime` as a dependency
   - The .NET runtime will be acquired automatically when the extension activates
 
@@ -30,7 +30,8 @@ This extension includes the Bicep Language Server and should work out of the box
 
 This extension uses the **Bicep Language Server** (`Bicep.LangServer.dll`):
 - Bundled with the extension (~100MB)
-- Requires .NET Runtime 8.0
+- Depends on .NET Runtime 8.0
+  - Automatically installed via the Microsoft official extension [.NET Install Tool](https://open-vsx.org/extension/ms-dotnettools/vscode-dotnet-runtime)
 - Currently using Bicep v0.39.26
 - Runs via the .NET Install Tool extension
 
@@ -47,75 +48,6 @@ If you wish to use a custom Bicep Language Server DLL, you can configure the pat
      "bicep.languageServerPath": "/path/to/Bicep.LangServer.dll"
    }
    ```
-
-## Development
-
-### Prerequisites
-
-- **Bun**: This project uses [Bun](https://bun.sh) as the package manager, test runner, and bundler.
-  - Version: See `.bun-version` (currently 1.3.1)
-
-### Build & Run
-
-1. Install dependencies:
-   ```bash
-   bun install
-   ```
-
-2. Download Bicep Language Server binaries:
-   ```bash
-   bun run download-server
-   ```
-   This downloads Bicep CLI binaries (~90MB per platform) for all supported platforms.
-
-3. Build the extension:
-   ```bash
-   bun run build
-   ```
-
-4. Watch for changes (development):
-   ```bash
-   bun run watch
-   ```
-
-5. Package (VSIX):
-   ```bash
-   bun run package
-   ```
-   Note: This automatically runs `download-server` and `build` via the `vscode:prepublish` script.
-
-### Testing
-
-Run unit tests:
-```bash
-bun test
-```
-
-Run E2E tests:
-```bash
-bun run test:e2e
-```
-
-The E2E tests will:
-- Compile TypeScript test files
-- Download VS Code test instance (if not cached)
-- Run tests in a real VS Code environment
-
-### Azure/bicep Reference Repository
-
-This project includes the [Azure/bicep](https://github.com/Azure/bicep) repository as a reference using **git subtree** in the `vendor/bicep` directory. This allows us to reference the original source code for syntax definitions, language server implementation, and other features.
-
-**Update the reference:**
-```bash
-bun run update-bicep-reference
-```
-
-This will pull the latest changes from the Azure/bicep main branch.
-
-**Manual update (alternative):**
-```bash
-git subtree pull --prefix=vendor/bicep https://github.com/Azure/bicep main --squash
-```
 
 ## Roadmap
 
@@ -164,6 +96,10 @@ This extension follows a **lightweight, focused approach**:
 - Defer to the Bicep CLI for build/compile operations
 - Avoid duplicating functionality available in other tools
 - Keep the extension small and fast
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, build instructions, and testing guidelines.
 
 ## License
 
