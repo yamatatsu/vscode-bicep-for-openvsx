@@ -25,10 +25,6 @@
     "url": "https://github.com/yamatatsu/vscode-bicep-for-openvsx"
   },
   "repository": "github:yamatatsu/vscode-bicep-for-openvsx",
-  "galleryBanner": {
-    "color": "E7F1FA",
-    "theme": "light"
-  },
   "homepage": "https://github.com/yamatatsu/vscode-bicep-for-openvsx/blob/main/README.md",
   "engines": {
     "vscode": "^1.90.0"
