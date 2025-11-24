@@ -20,6 +20,7 @@
   "main": "./dist/extension.js",
   "author": "Tatsuya Yamamoto <the.kinnikuman@gmail.com> (https://github.com/yamatatsu)",
   "publisher": "yamatatsu",
+  "icon": "icons/logo.png",
   "bugs": {
     "url": "https://github.com/yamatatsu/vscode-bicep-for-openvsx"
   },
@@ -38,6 +39,7 @@
     "syntaxes",
     "schemas",
     "language-configuration.json",
+    "icons",
     "README.md",
     "LICENSE",
     "THIRD_PARTY_NOTICES"
@@ -102,7 +104,11 @@
         "extensions": [
           ".bicep"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/bicep-file.svg",
+          "dark": "./icons/bicep-file.svg"
+        }
       },
       {
         "id": "bicep-params",
@@ -113,7 +119,11 @@
         "extensions": [
           ".bicepparam"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/bicepparam-file.svg",
+          "dark": "./icons/bicepparam-file.svg"
+        }
       }
     ],
     "grammars": [
