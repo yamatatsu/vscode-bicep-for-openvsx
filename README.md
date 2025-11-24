@@ -6,7 +6,7 @@ Open VSX compatible Bicep language support for VS Code (Unofficial).
 
 ## Features
 
-This extension provides language support for Bicep files (`.bicep`), including:
+This extension provides language support for Bicep files (`.bicep`) and Bicep parameter files (`.bicepparam`), including:
 
 - **Syntax Highlighting**: Colorization for Bicep keywords, strings, comments, and more.
 - **Language Server Features**:
@@ -123,14 +123,14 @@ This project aims to provide essential language support for Bicep in Open VSX co
 ### Current Status
 
 ✅ **Implemented:**
-- Bicep syntax highlighting
+- Bicep syntax highlighting (`.bicep` and `.bicepparam` files)
 - Language Server integration (diagnostics, IntelliSense, hover, formatting)
+- `.bicepparam` file support
 - Configurable language server path
 
 ### Planned Features
 
 #### Phase 1: Basic Language Features
-- `.bicepparam` file support
 - `bicepconfig.json` JSON schema validation
 - Editor default settings (tab size, etc.)
 - Custom file icons
