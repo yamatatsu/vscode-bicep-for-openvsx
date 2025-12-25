@@ -1,0 +1,33 @@
+name: Update TextMate Grammar
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Every Monday at 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-grammar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest grammar
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/Azure/bicep/main/src/textmate/bicep.tmlanguage \
+            -o syntaxes/bicep.tmlanguage
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'feat: update TextMate grammar from Azure/bicep'
+          title: 'feat: update TextMate grammar from Azure/bicep'
+          body: |
+            This PR updates the TextMate grammar from the upstream Azure/bicep repository.
+
+            Source: https://github.com/Azure/bicep/blob/main/src/textmate/bicep.tmlanguage
+          branch: feat/update-textmate-grammar
+          delete-branch: true
