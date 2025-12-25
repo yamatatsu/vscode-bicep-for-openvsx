@@ -1,0 +1,37 @@
+name: Update Language Server
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Every Monday at 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-langserver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest Bicep release
+        id: latest
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/Azure/bicep/releases/latest | jq -r .tag_name)
+          echo "version=$LATEST" >> $GITHUB_OUTPUT
+
+      - name: Update version file
+        run: echo "${{ steps.latest.outputs.version }}" > .bicep-langserver-version
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'feat: update Bicep Language Server to ${{ steps.latest.outputs.version }}'
+          title: 'feat: update Bicep Language Server to ${{ steps.latest.outputs.version }}'
+          body: |
+            Updates Bicep Language Server to ${{ steps.latest.outputs.version }}
+
+            Release: https://github.com/Azure/bicep/releases/tag/${{ steps.latest.outputs.version }}
+          branch: feat/update-langserver
+          delete-branch: true

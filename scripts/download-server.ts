@@ -5,8 +5,11 @@ import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
-const BICEP_VERSION = 'v0.39.26';
-const ASSETS_DIR = path.join(__dirname, '..', 'assets');
+const versionFile = Bun.file(
+  path.join(import.meta.dir, '..', '.bicep-langserver-version'),
+);
+const BICEP_VERSION = (await versionFile.text()).trim();
+const ASSETS_DIR = path.join(import.meta.dir, '..', 'assets');
 const LANG_SERVER_DIR = path.join(ASSETS_DIR, 'bicepLanguageServer');
 const ZIP_FILE = path.join(ASSETS_DIR, 'bicep-langserver.zip');
 const DOWNLOAD_URL = `https://github.com/Azure/bicep/releases/download/${BICEP_VERSION}/bicep-langserver.zip`;
