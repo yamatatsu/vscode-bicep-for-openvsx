@@ -32,7 +32,6 @@ __E2E__/
   fixtures/              # Test fixtures (.bicep, .bicepparam files)
 scripts/
   download-server.ts     # Downloads Bicep Language Server from GitHub releases
-  update-grammar.ts      # Copies grammar from vendor/bicep
   update-bicep-reference.ts  # Updates vendor/bicep git subtree
 syntaxes/                # TextMate grammar for syntax highlighting
 schemas/                 # JSON schema for bicepconfig.json
@@ -86,3 +85,4 @@ bun run update-bicep-reference  # Pull latest from Azure/bicep main
 
 - **test.yml**: Runs on every push (lint, type check, build, E2E tests)
 - **release.yml**: Manual workflow dispatch for releases to Open VSX
+- **update-grammar.yml**: Weekly auto-update of TextMate grammar from Azure/bicep (creates PR if changes detected)
