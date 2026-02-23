@@ -79,6 +79,16 @@
     "ovsx": "^0.10.7",
     "typescript": "^5.0.0"
   },
+  "overrides": {
+    "qs": "^6.14.1",
+    "@isaacs/brace-expansion": "^5.0.1",
+    "minimatch": "^10.2.2",
+    "ajv": "^8.18.0",
+    "lodash": "^4.17.23",
+    "markdown-it": "^14.1.1",
+    "undici": "^7.22.0",
+    "diff": "^8.0.3"
+  },
   "extensionDependencies": [
     "ms-dotnettools.vscode-dotnet-runtime"
   ],
