@@ -20,9 +20,9 @@ This extension provides language support for Bicep files (`.bicep`) and Bicep pa
 
 This extension uses the **Bicep Language Server** (`Bicep.LangServer.dll`):
 - Bundled with the extension (~100MB)
-- Depends on .NET Runtime 8.0
+- Depends on .NET Runtime 10.0
   - Automatically installed via the Microsoft official extension [.NET Install Tool](https://open-vsx.org/extension/ms-dotnettools/vscode-dotnet-runtime)
-- Currently using Bicep v0.39.26
+- Currently using Bicep v0.40.2
 - Runs via the .NET Install Tool extension
 
 ## Roadmap

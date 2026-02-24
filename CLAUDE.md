@@ -6,7 +6,7 @@ This file provides guidance for Claude Code when working with this repository.
 
 VS Code extension providing Bicep language support for Open VSX. Bicep is Microsoft Azure's DSL for infrastructure as code.
 
-**Architecture**: TypeScript extension (client) -> vscode-languageclient -> .NET 8.0 Runtime -> Bicep Language Server (DLL)
+**Architecture**: TypeScript extension (client) -> vscode-languageclient -> .NET 10.0 Runtime -> Bicep Language Server (DLL)
 
 ## Essential Commands
 
@@ -71,7 +71,7 @@ This extension intentionally keeps a **minimal scope**:
 
 - `vscode-languageclient`: Language Server Protocol client
 - `ms-dotnettools.vscode-dotnet-runtime`: .NET runtime acquisition (extension dependency)
-- Bicep Language Server: Downloaded from Azure/bicep GitHub releases (v0.39.26)
+- Bicep Language Server: Downloaded from Azure/bicep GitHub releases (v0.40.2)
 
 ## Updating Bicep Reference
 
