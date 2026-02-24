@@ -164,5 +164,8 @@
         }
       }
     }
+  },
+  "patchedDependencies": {
+    "minimatch@10.2.2": "patches/minimatch@10.2.2.patch"
   }
 }
