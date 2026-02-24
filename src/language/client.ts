@@ -34,7 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const dotnetResult = await vscode.commands.executeCommand<{
       dotnetPath: string;
     }>('dotnet.acquire', {
-      version: '8.0',
+      version: '10.0',
       requestingExtensionId: 'Yamatatsu.vscode-bicep-for-openvsx',
     });
 
